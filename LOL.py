@@ -1,7 +1,9 @@
 import requests
 import json
 import senha
+
 api_key = senha.api_key
+
 class LOL:
     def __init__(self,puid,wins,loses):
         self.puid = puid

@@ -1,15 +1,20 @@
 import requests
 import json
 import senha
+import time
 api_key = senha.api_key
 class TFT:
     def __init__(self,puid):
+        start_time = time.time()
         self.puid = puid
         self.nick = self.get_nick()
         self.last = self.last_match()
         self.gen_all()
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print("Tempo de execução:", elapsed_time, "segundos")
+        print("Gerei {} TFT".format(self.nick))
 
-    
     def gen_all(self):
         request = self.gen_json()
         for i in range(0,8):
@@ -29,7 +34,6 @@ class TFT:
                 self.players_eliminated = request["info"]["participants"][i]["players_eliminated"]
 
                 self.game_length = str(int(request["info"]["game_length"] // 60))+":"+str(int(request["info"]["game_length"] % 60))
-        
         
     def get_nick(self):
         api_url = "https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/"+self.puid+"?api_key="+api_key

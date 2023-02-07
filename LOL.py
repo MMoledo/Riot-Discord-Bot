@@ -1,16 +1,23 @@
 import requests
 import json
 import senha
+import time
+
 api_key = senha.api_key
+
 class LOL:
     def __init__(self,puid,wins,loses):
+        start_time = time.time()
         self.puid = puid
-        self.nick = self.get_nick()
         self.last = self.last_match()
         self.matchs = wins+loses
         self.count_win = wins
         self.count_lose = loses
         self.gen_all()
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print("Tempo de execução:", elapsed_time, "segundos")
+        print("Gerei {} LOL".format(self.nick))
         
     def get_nick(self):
         api_url = "https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/"+self.puid+"?api_key="+api_key
@@ -44,6 +51,7 @@ class LOL:
                 self.death = request["info"]["participants"][i]["deaths"]
                 self.assists = request["info"]["participants"][i]["assists"]
                 self.matchs = self.matchs+1
+                self.nick = request["info"]["participants"][i]["summonerName"]
                 if request["info"]["participants"][i]["win"]:
                     self.win = "Ganhou"
                     self.count_win = self.count_win+1

@@ -18,19 +18,19 @@ class Client(discord.Client):
             self.synced = True
         print(f"Entramos como {self.user}.")
 
-aclient = Client()
-tree = app_commands.CommandTree(aclient)
+client = Client()
+tree = app_commands.CommandTree(client)
 
 @tree.command(guild = discord.Object(id=id_do_servidor), name = 'cadastro', description='Cadastre seu nick') #Comando específico para seu servidor
 async def Cadastro(interaction: discord.Interaction):
     view = DropDownView()
     await interaction.response.send_message('**Selecione o jogo que deseja cadastrar!**',view=view, ephemeral = True) 
 
-@aclient.event
+@client.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(aclient))
+    print('We have logged in as {0.user}'.format(client))
 
-    channel = aclient.get_channel(978479957418311700)
+    channel = client.get_channel(978479957418311700)
     
     #Confirmacao que esta funcionando
     print("Liguei!")
@@ -47,4 +47,4 @@ async def on_ready():
     print("Sai Da Execucao, gerando data...")
     gen_axt()
 """
-aclient.run(senha)
+client.run(senha)

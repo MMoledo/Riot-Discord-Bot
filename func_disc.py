@@ -27,9 +27,10 @@ class Dropdown(discord.ui.Select):
 
     async def callback(self,interaction: discord.Interaction):
         if self.values[0] == "tft":
-            await interaction.response.send_message("tft",ephemeral=True)
+            await interaction.response.send_message("**Digite seu nick no chat:**",ephemeral=True)
+        
         if self.values[0] == "lol":
-            await interaction.response.send_message("lol",ephemeral=True)
+            await interaction.response.send_message("**Digite seu nick no chat:**",ephemeral=True)
             
 class DropDownView(discord.ui.View):
     def __init__(self):

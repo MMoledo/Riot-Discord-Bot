@@ -6,7 +6,7 @@ print("Ligando...")
 
 id_do_servidor = 871544237458595910
 
-class client(discord.Client):
+class Client(discord.Client):
     def __init__(self):
         super().__init__(intents=discord.Intents.default())
         self.synced = False #Nós usamos isso para o bot não sincronizar os comandos mais de uma vez
@@ -18,11 +18,11 @@ class client(discord.Client):
             self.synced = True
         print(f"Entramos como {self.user}.")
 
-aclient = client()
+aclient = Client()
 tree = app_commands.CommandTree(aclient)
 
 @tree.command(guild = discord.Object(id=id_do_servidor), name = 'cadastro', description='Cadastre seu nick') #Comando específico para seu servidor
-async def slash2(interaction: discord.Interaction):
+async def Cadastro(interaction: discord.Interaction):
     view = DropDownView()
     await interaction.response.send_message('**Selecione o jogo que deseja cadastrar!**',view=view, ephemeral = True) 
 

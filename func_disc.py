@@ -30,6 +30,7 @@ def check_nick(nick,x):
     linhas = tb.shape[0]
     achei = False
 
+
     for i in range(0,linhas):
         if tb["Nick"][i] == oficial:
             achei = True

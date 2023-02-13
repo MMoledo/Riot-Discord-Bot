@@ -31,6 +31,7 @@ class Client(discord.Client):
         listagem_LOL = await read_LOL(tabela)
         tb = pd.read_excel(tabela)
         linhas = tb.shape[0]
+
         while Error:
             tb = pd.read_excel(tabela)
             linhas = tb.shape[0]

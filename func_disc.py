@@ -1,6 +1,8 @@
 import discord
 from discord import app_commands
 import random
+import requests
+import senha
 import os
 import time
 import asyncio
@@ -8,47 +10,50 @@ import pandas as pd
 from LOL import LOL
 from TFT import TFT
 
+api_key = senha.api_key
 client = discord.Client(intents=discord.Intents.all())
 channel = client.get_channel(1062498678717284445)
 
-class Dropdown(discord.ui.Select):
-    def __init__(self):
-        options = [
-            discord.SelectOption(value="tft",label="Teamfight Tactics",emoji="🎶"),
-            discord.SelectOption(value="lol",label="League of Legends",emoji="😎"),
-        ]
-        super().__init__(
-            placeholder = "Selecione uma opção...",
-            custom_id="persistent_view;dropdown_help",
-            min_values = 1,
-            max_values = 1,
-            options=options
-        )
+def get_info(nick):
+    api_url = "https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+nick+"?api_key="+api_key
+    request = requests.get(api_url)
+    request = request.json()
+    return request["name"],request["puuid"],request["summonerLevel"]
 
-    async def callback(self,interaction: discord.Interaction):
-        if self.values[0] == "tft":
-            await interaction.response.send_message("tft",ephemeral=True)
-        if self.values[0] == "lol":
-            await interaction.response.send_message("lol",ephemeral=True)
-            
-class DropDownView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
+def check_nick(nick,x):
+    try:
+        oficial,puuid,level = get_info(nick)
+    except:
+        print("Nick nao existente")
+        return None,None,None
+    tb = pd.read_excel(x)
+    linhas = tb.shape[0]
+    achei = False
 
-        self.add_item(Dropdown())
+    for i in range(0,linhas):
+        if tb["Nick"][i] == oficial:
+            achei = True
 
+    if not achei:
+        print(f"Adicionando - {oficial}")
+        tb.loc[linhas] = [oficial,puuid,0,0]
 
-async def read_LOL():
-    tb = pd.read_excel("testando_LOL.xlsx")
+    tb.to_excel(x,index=False)
+    return oficial,level,achei
+
+async def read_LOL(x):
+    tb = pd.read_excel(x)
     linhas = tb.shape[0]
     listagem = []
     for i in range(0,linhas):
         print("Consegui")
         adicionando = LOL(tb.Puuid[i],tb.Wins[i],tb.Loses[i])
+
         listagem.append(adicionando)
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.5)
     return listagem
 
+"""
 async def read_TFT():
     tb = pd.read_excel("testando_TFT.xlsx")
     linhas = tb.shape[0]
@@ -59,8 +64,11 @@ async def read_TFT():
         listagem.append(adicionando)
         await asyncio.sleep(1)
     return listagem
+"""
 
-async def loop(channel,listagem_TFT,listagem_LOL):
+async def loop(channel,listagem_LOL):
+
+    """
     for tft in listagem_TFT:
         try:
             print(tft.nick)
@@ -73,7 +81,8 @@ async def loop(channel,listagem_TFT,listagem_LOL):
             print("Erro Apresentado:\n"+str(error)+"\n"+repr(error))
             return False
         await asyncio.sleep(1)
-    await asyncio.sleep(30)
+    """
+
     for lol in listagem_LOL:
         try:
             print(lol.nick)
@@ -81,12 +90,12 @@ async def loop(channel,listagem_TFT,listagem_LOL):
                 embed = printa_lol(lol)
                 await channel.send(embed=embed)
                 print("Printei:",lol)
-        except:
+        except Exception as error:
             print("NAO CONSEGUI LOL")
             print("Erro Apresentado:\n"+str(error)+"\n"+repr(error))
             return False
         await asyncio.sleep(1)
-    await asyncio.sleep(30)
+    await asyncio.sleep(5)
     print("| Resetando... |")
     return True
 
@@ -142,27 +151,37 @@ def printa_lol(account):
     return embed
 
 def gen_axt():
+    """
     listagem_TFT = read_TFT()
+    """
     listagem_LOL = read_LOL()
     i = random.randint(1,1000)
     name = "listagem"+str(i)+".py"
     file = open(name,"w")
+    """
     file.write("from TFT import TFT\n")
+    """
     file.write("from LOL import LOL\n")
     listagem_lol = []
+    """
     listagem_tft = []
+    """
     for pessoa in listagem_LOL:
         nick = pessoa.nick
         nick = nick.replace(" ","")
         nick = nick.lower()
         nick_lol = nick
         nick_lol = nick_lol+"_LOL"
+        """
         nick = nick+"_TFT"
         listagem_tft.append(nick_lol)
+        """
         file.write(nick_lol+" = LOL(""'"+pessoa.puid+"'"+","+str(pessoa.count_win)+","+str(pessoa.count_lose)+")\n")
 
         listagem_lol.append(nick)
+        """
         file.write(nick+" = TFT(""'"+pessoa.puid+"'"")\n")
+        """
     
     file.write("listagem1 = [")
     count = 0
@@ -176,6 +195,7 @@ def gen_axt():
     file.write("listagem2 = [")
     count = 0
     print(listagem_lol)
+    """
     for i in listagem_tft:
         tamanho = len(listagem_tft)
         file.write(i)
@@ -185,6 +205,7 @@ def gen_axt():
     file.write("]\n")
     print(listagem_tft)
     file.close()
+    """
     if os.path.exists("listagem.py"):
         os.remove("listagem.py")
     else:

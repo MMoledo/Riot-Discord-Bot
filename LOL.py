@@ -2,6 +2,7 @@ import requests
 import json
 import senha
 import time
+import pandas as pd
 
 api_key = senha.api_key
 
@@ -40,6 +41,8 @@ class LOL:
     
     def gen_all(self):
         request = self.gen_json()
+        x = "testando_LOL copy.xlsx"
+        tb = pd.read_excel(x)
         for i in range(0,10):
             if request["info"]["participants"][i]["puuid"] == self.puid:
                 self.gamemod = request["info"]["gameMode"]
@@ -55,13 +58,22 @@ class LOL:
                 if request["info"]["participants"][i]["win"]:
                     self.win = "Ganhou"
                     self.count_win = self.count_win+1
+                    linhas = tb.shape[0]
+                    for i in range(0,linhas):
+                        if tb["Nick"][i] == self.nick:
+                            tb.loc[i] = [self.nick,self.puid,self.count_win,self.count_lose]
                 else:
                     self.win = "Perdeu"
                     self.count_lose = self.count_lose+1
+                    linhas = tb.shape[0]
+                    for i in range(0,linhas):
+                        if tb["Nick"][i] == self.nick:
+                            tb.loc[i] = [self.nick,self.puid,self.count_win,self.count_lose]
+                tb.to_excel(x,index=False)
                 self.kda = str(self.kills)+"/"+str(self.death)+"/"+str(self.assists)
                 self.win_rate = str(round((self.count_win/self.matchs)*100))+"%"
+                print(self.count_lose,self.count_win)
         
-    
     def gen_json(self):
         api_url = "https://americas.api.riotgames.com/lol/match/v5/matches/"+self.last+"?api_key="+api_key
         get = requests.get(api_url)
@@ -73,7 +85,7 @@ class LOL:
         name = self.nick+self.last + ".json"
         file = open(name,"w")
         file.write(doc)
-        file.close
+        file.close()
     
     def teste(self):
         self.kills = 100000

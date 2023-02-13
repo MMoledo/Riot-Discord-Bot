@@ -65,7 +65,7 @@ class TFT:
         name = self.nick+self.last + ".json"
         file = open(name,"w")
         file.write(doc)
-        file.close
+        file.close()
     
     def print_test(self):
         print(self.gen_json())

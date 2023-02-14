@@ -42,7 +42,6 @@ class Client(discord.Client):
             Error = await loop(channel,listagem_LOL) 
             
         print("Sai Da Execucao, gerando data...")
-        gen_axt()
 
 client = Client()
 tree = app_commands.CommandTree(client)

@@ -29,8 +29,7 @@ def check_nick(nick,x):
     tb = pd.read_excel(x)
     linhas = tb.shape[0]
     achei = False
-
-
+    
     for i in range(0,linhas):
         if tb["Nick"][i] == oficial:
             achei = True
@@ -151,38 +150,38 @@ def printa_lol(account):
         embed.set_footer(text="KRLLL DEU PENTA KILL !!!!!!")
     return embed
 
-def gen_axt():
-    """
+""""def gen_axt(x):
+
     listagem_TFT = read_TFT()
-    """
-    listagem_LOL = read_LOL()
+
+    listagem_LOL = read_LOL(x)
     i = random.randint(1,1000)
     name = "listagem"+str(i)+".py"
     file = open(name,"w")
-    """
+
     file.write("from TFT import TFT\n")
-    """
+
     file.write("from LOL import LOL\n")
     listagem_lol = []
-    """
+
     listagem_tft = []
-    """
+
     for pessoa in listagem_LOL:
         nick = pessoa.nick
         nick = nick.replace(" ","")
         nick = nick.lower()
         nick_lol = nick
         nick_lol = nick_lol+"_LOL"
-        """
+
         nick = nick+"_TFT"
         listagem_tft.append(nick_lol)
-        """
+ 
         file.write(nick_lol+" = LOL(""'"+pessoa.puid+"'"+","+str(pessoa.count_win)+","+str(pessoa.count_lose)+")\n")
 
         listagem_lol.append(nick)
-        """
+
         file.write(nick+" = TFT(""'"+pessoa.puid+"'"")\n")
-        """
+
     
     file.write("listagem1 = [")
     count = 0
@@ -196,7 +195,6 @@ def gen_axt():
     file.write("listagem2 = [")
     count = 0
     print(listagem_lol)
-    """
     for i in listagem_tft:
         tamanho = len(listagem_tft)
         file.write(i)
@@ -206,7 +204,6 @@ def gen_axt():
     file.write("]\n")
     print(listagem_tft)
     file.close()
-    """
     if os.path.exists("listagem.py"):
         os.remove("listagem.py")
     else:
@@ -214,4 +211,4 @@ def gen_axt():
     if os.path.exists(name):
         os.rename(name, "listagem.py")
     else:
-        print("The file does not exist - 2")
+        print("The file does not exist - 2")"""
